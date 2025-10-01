@@ -39,6 +39,29 @@ firebase.ts
 .env.production
 .env.development
 
+# Other sensitive files and patterns
+*.key
+*.pem
+*.p12
+*.crt
+*.cert
+*.jks
+*.pfx
+*.env
+*.env.*
+*.secret
+*.token
+*.config.js
+*.config.ts
+*.credentials
+*.private
+*.clientId
+*.clientSecret
+*.password
+*.apiKey
+*.DS_Store
+next.config.ts
+
 # vercel
 .vercel
 

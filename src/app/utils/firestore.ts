@@ -1,3 +1,40 @@
+// SRP: This function only fetches a single borrower by ID, not responsible for UI or other logic
+export async function fetchBorrowerById(borrowerId: string): Promise<Borrower | null> {
+  try {
+    const docRef = doc(db, 'borrowers', borrowerId);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) return null;
+    const data = docSnap.data();
+    // OCP: Borrower shape is defined by the Borrower type, easy to extend
+    return {
+      id: docSnap.id,
+      name: data.name ?? '',
+      loanAmount: data.loanAmount ?? 0,
+      rateOfInterest: data.rateOfInterest ?? '',
+      startDate: data.startDate ?? '',
+      endDate: data.endDate ?? '',
+      daysBetween: data.daysBetween ?? '',
+      totalAmount: data.totalAmount ?? '',
+      status: data.status ?? '',
+      dueDate: data.dueDate ?? '',
+      applicationId: data.applicationId ?? '',
+      numericId: data.numericId ?? '',
+    };
+  } catch (e) {
+    console.error('Error fetching borrower:', e);
+    return null;
+  }
+}
+// SRP: Only deletes a payment, not responsible for UI or other logic
+export async function deletePayment(borrowerId: string, paymentId: string): Promise<void> {
+  try {
+    const paymentDoc = doc(db, 'borrowers', borrowerId, 'payments', paymentId);
+    await deleteDoc(paymentDoc);
+  } catch (e) {
+    console.error('Error deleting payment:', e);
+    throw e;
+  }
+}
 
 export async function updateApplication(id: string, updatedData: any) {
   try {
@@ -116,10 +153,10 @@ export async function fetchBorrowers() {
   });
 }
 
-// Save a payment for a borrower
-export async function savePayment(borrowerId: string, payment: { amount: number, date: string }) {
+// SRP: Only saves a payment, not responsible for validation or UI
+// OCP: Accepts a payment object, can be extended
+export async function savePayment(borrowerId: string, payment: Payment): Promise<void> {
   try {
-    // Payments are stored in a subcollection under each borrower
     const paymentsCol = collection(db, 'borrowers', borrowerId, 'payments');
     await addDoc(paymentsCol, payment);
   } catch (e) {
@@ -128,15 +165,37 @@ export async function savePayment(borrowerId: string, payment: { amount: number,
   }
 }
 
-// Fetch payment history for a borrower
-export async function fetchPayments(borrowerId: string) {
+// SRP: Only fetches payments, not responsible for UI or other logic
+export async function fetchPayments(borrowerId: string): Promise<Payment[]> {
   try {
     const paymentsCol = collection(db, 'borrowers', borrowerId, 'payments');
     const q = query(paymentsCol, orderBy('date', 'asc'));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc, idx) => ({ id: doc.id, ...doc.data() }));
+    // OCP: Payment shape is defined by Payment type
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Payment));
   } catch (e) {
     console.error('Error fetching payments:', e);
     return [];
   }
 }
+// ISP: Define focused types for each entity
+export type Borrower = {
+  id: string;
+  name: string;
+  loanAmount: number;
+  rateOfInterest: string;
+  startDate: string;
+  endDate: string;
+  daysBetween: string;
+  totalAmount: string;
+  status: string;
+  dueDate: string;
+  applicationId: string;
+  numericId: string;
+};
+
+export type Payment = {
+  id?: string; // Optional for new payments, required when reading from Firestore
+  amount: number;
+  date: string;
+};

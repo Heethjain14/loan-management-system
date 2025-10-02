@@ -1,25 +1,30 @@
+// SRP: This file is only responsible for the Applications UI and logic
 "use client";
 
+// SRP: Data utilities are imported, UI logic is kept separate
 import { useEffect, useState } from "react";
 import { fetchApplications, saveApplication, updateApplicationStatus } from "../utils/firestore";
 import { useRouter } from "next/navigation";
 
-// Helper to get today's date in yyyy-mm-dd
+// SRP: Utility functions are focused and reusable
 const getToday = () => {
   const d = new Date();
   return d.toISOString().slice(0, 10);
 };
-// Helper to get date 30 days from today in yyyy-mm-dd
 const get30DaysFromToday = () => {
   const d = new Date();
   d.setDate(d.getDate() + 30);
   return d.toISOString().slice(0, 10);
 };
 
+// SRP: ApplicationsPage only handles application UI and logic
+// OCP: Can extend with new features without modifying existing logic
 export default function ApplicationsPage() {
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<any>({});
+  // SRP: State hooks are focused on one responsibility each
+  const [editingId, setEditingId] = useState<string | null>(null); // SRP
+  const [editForm, setEditForm] = useState<any>({}); // SRP
 
+  // SRP: startEdit only sets up editing state
   const startEdit = (app: any) => {
     setEditingId(app.id);
     setEditForm({
@@ -32,10 +37,13 @@ export default function ApplicationsPage() {
     });
   };
 
+  // SRP: handleEditChange only updates form state
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditForm({ ...editForm, [e.target.name]: e.target.value });
   };
 
+  // SRP: saveEdit only handles saving logic
+  // OCP: Can extend calculation logic without modifying saveEdit
   const saveEdit = async (id: string) => {
     let daysBetween = 0;
     if (editForm.startDate && editForm.endDate) {
@@ -64,11 +72,13 @@ export default function ApplicationsPage() {
     }
   };
 
+  // SRP: cancelEdit only resets editing state
   const cancelEdit = () => {
     setEditingId(null);
     setEditForm({});
   };
   const [showAll, setShowAll] = useState(false);
+  // SRP: deleteApplication only handles deletion logic
   const deleteApplication = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this application?')) return;
     try {
@@ -147,6 +157,7 @@ export default function ApplicationsPage() {
     setLoading(false);
   };
 
+  // SRP: UI rendering is kept separate from logic
   return (
     <div className="min-h-screen bg-black">
       {/* Navbar */}

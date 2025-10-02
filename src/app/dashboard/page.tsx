@@ -1,12 +1,18 @@
+// SRP: This file is only responsible for the Dashboard UI and logic
 "use client";
 
+// SRP: Data utilities are imported, UI logic is kept separate
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchBorrowers, fetchPayments } from "../utils/firestore";
 
+// SRP: DashboardPage only handles dashboard UI and logic
+// OCP: Can extend with new features without modifying existing logic
 export default function DashboardPage() {
-  const [showAll, setShowAll] = useState(false);
-  const [searchName, setSearchName] = useState("");
+  // SRP: State hooks are focused on one responsibility each
+  const [showAll, setShowAll] = useState(false); // SRP
+  const [searchName, setSearchName] = useState(""); // SRP
+  // SRP: deleteBorrower only handles deletion logic
   const deleteBorrower = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this borrower?')) return;
     try {
@@ -18,14 +24,15 @@ export default function DashboardPage() {
     }
   };
   const router = useRouter();
-  const [borrowers, setBorrowers] = useState<any[]>([]);
-  const [paidAmounts, setPaidAmounts] = useState<{[id: string]: number}>({});
+  const [borrowers, setBorrowers] = useState<any[]>([]); // SRP
+  const [paidAmounts, setPaidAmounts] = useState<{[id: string]: number}>({}); // SRP
 
+  // SRP: useEffect only loads data, not responsible for UI
   useEffect(() => {
     async function loadBorrowers() {
       const data = await fetchBorrowers();
       setBorrowers(data);
-      // Fetch paid amounts for each borrower
+      // SRP: paidAmounts calculation is kept separate
       const paid: {[id: string]: number} = {};
       await Promise.all(
         data.map(async (b: any) => {
@@ -38,6 +45,7 @@ export default function DashboardPage() {
     loadBorrowers();
   }, []);
 
+  // SRP: UI rendering is kept separate from logic
   return (
     <div className="min-h-screen bg-black">
       {/* Navbar */}

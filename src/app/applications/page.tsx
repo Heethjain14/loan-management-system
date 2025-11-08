@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { fetchApplications, saveApplication, updateApplicationStatus } from "../utils/firestore";
 import { useRouter } from "next/navigation";
+import Navbar from "../components/Navbar";
 
 // SRP: Utility functions are focused and reusable
 const getToday = () => {
@@ -159,27 +160,9 @@ export default function ApplicationsPage() {
 
   // SRP: UI rendering is kept separate from logic
   return (
-    <div className="min-h-screen bg-black">
-      {/* Navbar */}
-  <nav className="bg-black shadow flex items-center justify-between px-8 py-4 mb-8">
-        <div className="flex gap-6">
-          <button
-            className="text-blue-600 font-bold hover:underline"
-            onClick={() => router.push('/dashboard')}
-          >
-            Dashboard
-          </button>
-          <button
-            className="text-blue-600 font-bold hover:underline"
-            onClick={() => router.push('/applications')}
-          >
-            Applications
-          </button>
-        </div>
-        <span className="font-semibold text-lg text-gray-700">Loan Management</span>
-      </nav>
-
-      <div className="p-8">
+    <div className="min-h-screen bg-neutral-900">
+      <Navbar />
+      <div className="p-4 sm:p-8">
         <h1 className="text-3xl font-extrabold text-white mb-6">
           Loan Applications
         </h1>
@@ -208,71 +191,76 @@ export default function ApplicationsPage() {
         </button>
 
 
-  <form className="mb-8 bg-black p-6 rounded-xl shadow flex gap-4 items-end" onSubmit={handleSubmit}>
-    <div>
-      <label className="block text-sm font-medium text-gray-700">Name</label>
-      <input
-        type="text"
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-        required
-        className="mt-1 block w-full"
-        placeholder="Enter name"
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-medium text-gray-700">Loan Amount</label>
-      <input
-        type="number"
-        name="loanAmount"
-        value={form.loanAmount}
-        onChange={handleChange}
-        required
-        className="mt-1 block w-full"
-        placeholder="Enter amount"
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-medium text-gray-700">Rate of Interest (%)</label>
-      <input
-        type="number"
-        name="rateOfInterest"
-        value={form.rateOfInterest}
-        onChange={handleChange}
-        required
-        className="mt-1 block w-full"
-        placeholder="Enter rate"
-        step="0.01"
-        min="0"
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-medium text-gray-700">Start Date</label>
-      <input
-        type="date"
-        name="startDate"
-        value={form.startDate}
-        onChange={handleChange}
-        required
-        className="mt-1 block w-full"
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-medium text-gray-700">End Date</label>
-      <input
-        type="date"
-        name="endDate"
-        value={form.endDate}
-        onChange={handleChange}
-        required
-        className="mt-1 block w-full"
-      />
+  <form className="mb-8 bg-neutral-800 border border-neutral-700 p-4 sm:p-6 rounded-xl shadow-lg" onSubmit={handleSubmit}>
+    <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Add New Application</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+      <div>
+        <label className="block text-sm font-medium text-neutral-300 mb-1">Name</label>
+        <input
+          type="text"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          required
+          className="w-full p-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Enter name"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-neutral-300 mb-1">Loan Amount</label>
+        <input
+          type="number"
+          name="loanAmount"
+          value={form.loanAmount}
+          onChange={handleChange}
+          required
+          className="w-full p-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Enter amount"
+          step="0.01"
+          min="0"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-neutral-300 mb-1">Rate of Interest (%)</label>
+        <input
+          type="number"
+          name="rateOfInterest"
+          value={form.rateOfInterest}
+          onChange={handleChange}
+          required
+          className="w-full p-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Enter rate"
+          step="0.01"
+          min="0"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-neutral-300 mb-1">Start Date</label>
+        <input
+          type="date"
+          name="startDate"
+          value={form.startDate}
+          onChange={handleChange}
+          required
+          className="w-full p-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-neutral-300 mb-1">End Date</label>
+        <input
+          type="date"
+          name="endDate"
+          value={form.endDate}
+          onChange={handleChange}
+          required
+          className="w-full p-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
     </div>
     <button
       type="submit"
       disabled={loading}
-      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+      className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 font-semibold"
     >
       {loading ? "Saving..." : "Add Application"}
     </button>
@@ -284,11 +272,12 @@ export default function ApplicationsPage() {
       value={searchName}
       onChange={e => setSearchName(e.target.value)}
       placeholder="Search by name..."
-      className="px-4 py-2 rounded-lg bg-neutral-900 text-white w-64"
+      className="px-4 py-2 rounded-lg bg-neutral-800 text-white border border-neutral-700 w-full sm:w-64 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
     />
   </div>
 
-  <table className="w-full border-collapse bg-black rounded-xl shadow">
+  <div className="overflow-x-auto">
+  <table className="w-full border-collapse bg-neutral-800 border border-neutral-700 rounded-xl shadow">
     <thead>
       <tr className="bg-neutral-800 text-left">
         <th className="p-3">SN No</th>
@@ -380,6 +369,7 @@ export default function ApplicationsPage() {
       ))}
     </tbody>
   </table>
+  </div>
   {applications.length > 5 && (
     <div className="mt-4">
       <button
